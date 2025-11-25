@@ -76,7 +76,7 @@ export function ms(str: StringValue): number {
 		)
 
 	// Извлечение значения и типа из совпадения
-	const groups = match?.groups as { value: string; type?: string } | undefined
+	const groups = match?.groups as { value: string; type?: string }
 	if (!groups) {
 		return NaN
 	}

@@ -1,10 +1,10 @@
 import {
-	ValidationArguments,
+	type ValidationArguments,
 	ValidatorConstraint,
-	ValidatorConstraintInterface
+	type ValidatorConstraintInterface
 } from 'class-validator'
 
-import { RegisterDto } from '@/auth/dto/register.dto'
+// import { RegisterDto } from '@/auth/dto/register.dto'
 
 @ValidatorConstraint({ name: 'isPasswordMatching', async: false })
 export class IsPasswordMatchingConstraint
@@ -14,11 +14,11 @@ export class IsPasswordMatchingConstraint
 		passwordRepeat: string,
 		args: ValidationArguments
 	): boolean {
-		const obj = args.object as RegisterDto
+		const obj = args.object as { password: string }
 		return obj.password === passwordRepeat
 	}
 
-	public defaultMessage(validationArguments?: ValidationArguments): string {
-		return "Passwords doesn't must match"
+	public defaultMessage(): string {
+		return `Passwords doesn't must match`
 	}
 }

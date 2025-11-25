@@ -40,7 +40,9 @@ export default tseslint.config(
 			'@typescript-eslint/no-unused-vars': 'warn',
 			'@typescript-eslint/no-unsafe-call': 'off',
 			'@typescript-eslint/no-base-to-string': 'off',
-			'@typescript-eslint/unbound-method': 'off'
+			'@typescript-eslint/unbound-method': 'off',
+			'@typescript-eslint/restrict-template-expressions': 'off',
+			'@typescript-eslint/no-redundant-type-constituents': 'off'
 		}
 	}
 )
