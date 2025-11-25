@@ -1,0 +1,63 @@
+services:
+  trpz-db:
+    container_name: trpz-db
+    image: postgres:16.8
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "54321:5432"
+    volumes:
+      - trpz-db-data:/var/lib/postgresql/data
+    networks:
+      - trpz-backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  trpz-redis:
+    container_name: trpz-redis
+    image: redis:7.2
+    restart: always
+    ports:
+      - "63798:6379"
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    volumes:
+      - trpz-redis-data:/data
+    depends_on:
+      - trpz-db
+    networks:
+      - trpz-backend
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  irc:
+    container_name: trpz-irc
+    image: inspircd/inspircd-docker:latest
+    volumes:
+      - ./config/inspircd:/inspircd/conf
+    ports:
+      - "6660-6669:6660-6669"
+    networks:
+      - trpz-backend
+    healthcheck:
+      test: [ "CMD", "./bin/inspircd", "--version" ]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
+
+volumes:
+  trpz-db-data:
+  trpz-redis-data:
+
+networks:
+  trpz-backend:
