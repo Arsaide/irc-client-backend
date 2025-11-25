@@ -1,0 +1,38 @@
+name: API Production Deployment
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Deploy-Production:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies in API folder
+        run: cd api && yarn install
+
+      - name: Run ESLint
+        run: cd api && yarn lint
+
+      - name: Run checking for extra code
+        run: |
+          if grep -r 'console.log' ./api/src; then
+            echo "Error: console.log statements found" >&2
+            exit 1
+          fi
+          if yarn tsc --noEmit | grep 'error TS6133'; then
+            echo "Error: Unused variables found" >&2
+            exit 1
+          fi
+
+      - name: Deployment
+        run: |
+          echo "Simulating deployment :)"
