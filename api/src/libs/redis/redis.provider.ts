@@ -1,6 +1,7 @@
 import { Logger, type Provider } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import Redis from 'ioredis'
+import { createClient } from 'redis'
 
 import { isDev } from '@/libs/common/utils'
 
@@ -12,7 +13,7 @@ export const redisProviders: Provider[] = [
 		provide: REDIS,
 		inject: [ConfigService],
 		useFactory: (configService: ConfigService) => {
-			const logger = new Logger('[IOREDIS]')
+			const logger = new Logger('IOREDIS')
 
 			const client = new Redis({
 				host: configService.getOrThrow('REDIS_HOST'),
@@ -42,12 +43,14 @@ export const redisProviders: Provider[] = [
 	{
 		provide: REDIS_SESSION,
 		inject: [ConfigService],
-		useFactory: (configService: ConfigService) => {
-			const logger = new Logger('[IOREDIS SESSION]')
+		useFactory: async (configService: ConfigService) => {
+			const logger = new Logger('IOREDIS SESSION')
 
-			const redisClient = new Redis({
-				host: configService.getOrThrow('REDIS_HOST'),
-				port: configService.getOrThrow('REDIS_PORT'),
+			const redisClient = createClient({
+				socket: {
+					host: configService.getOrThrow('REDIS_HOST'),
+					port: configService.getOrThrow('REDIS_PORT')
+				},
 				password: configService.getOrThrow('REDIS_PASSWORD')
 			})
 
@@ -58,6 +61,7 @@ export const redisProviders: Provider[] = [
 				logger.log('ioredis session connected')
 			)
 
+			await redisClient.connect()
 			return redisClient
 		}
 	}
