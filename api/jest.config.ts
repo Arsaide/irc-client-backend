@@ -14,7 +14,8 @@ const config: Config = {
 	moduleNameMapper: {
 		'^@/(.*)$': '<rootDir>/src/$1',
 		'^uuid$': '<rootDir>/test/__mocks__/uuid.js',
-		'^argon2$': '<rootDir>/test/__mocks__/argon2.js'
+		'^argon2$': '<rootDir>/test/__mocks__/argon2.js',
+		'^ioredis$': '<rootDir>/test/__mocks__/ioredis.ts'
 	},
 
 	modulePaths: ['<rootDir>'],

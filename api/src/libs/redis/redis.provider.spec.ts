@@ -2,33 +2,9 @@ import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import Redis from 'ioredis'
 
+import RedisMock from '../../../test/__mocks__/ioredis'
+
 import { REDIS, REDIS_SESSION, redisProviders } from './redis.provider'
-
-jest.mock('ioredis', () => {
-	class RedisMock {
-		status = 'ready'
-
-		constructor() {}
-
-		on(event: string, cb: () => void) {
-			if (event === 'connect' || event === 'ready') {
-				cb()
-			}
-		}
-
-		connect = jest.fn().mockResolvedValue(undefined)
-		disconnect = jest.fn().mockResolvedValue(undefined)
-		quit = jest.fn().mockResolvedValue(undefined)
-
-		set = jest.fn().mockResolvedValue('OK')
-		get = jest.fn().mockResolvedValue('some-value')
-		del = jest.fn().mockResolvedValue(1)
-	}
-
-	return {
-		default: RedisMock
-	}
-})
 
 describe('RedisProvider', () => {
 	let redisService: Redis
@@ -39,28 +15,24 @@ describe('RedisProvider', () => {
 			providers: [
 				...redisProviders,
 				{
-					provide: ConfigService,
-					useValue: {
-						getOrThrow: jest.fn((key: string) => {
-							switch (key) {
-								case 'REDIS_HOST':
-									return 'localhost'
-								case 'REDIS_PORT':
-									return 6379
-								case 'REDIS_PASSWORD':
-									return 'password'
-								default:
-									return null
-							}
-						}),
-						get: jest.fn(() => false)
-					}
+					provide: REDIS,
+					useValue: new RedisMock()
+				},
+				{
+					provide: REDIS_SESSION,
+					useValue: new RedisMock()
 				}
 			]
 		}).compile()
 
 		redisService = module.get<Redis>(REDIS)
 		redisSessionService = module.get<Redis>(REDIS_SESSION)
+	})
+
+	afterAll(async () => {
+		if (redisService) await redisService.quit().catch(() => {})
+		if (redisSessionService)
+			await redisSessionService.quit().catch(() => {})
 	})
 
 	it('should be defined', () => {
