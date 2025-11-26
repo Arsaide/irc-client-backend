@@ -1,21 +1,27 @@
 import type { Config } from 'jest'
 
 const config: Config = {
-	moduleFileExtensions: ['js', 'json', 'ts'],
+	moduleFileExtensions: ['js', 'json', 'ts', 'tsx'],
+	modulePathIgnorePatterns: ['<rootDir>/dist/'],
+
 	rootDir: '.',
 	testRegex: '.*\\.spec\\.ts$',
+
 	transform: {
-		'^.+\\.ts$': 'ts-jest'
+		'^.+\\.(t|j)sx?$': 'ts-jest'
 	},
 
 	moduleNameMapper: {
 		'^@/(.*)$': '<rootDir>/src/$1',
-		'^@prisma/__generated__$': '<rootDir>/prisma/__generated__',
-		'^@prisma/__generated__/(.*)$': '<rootDir>/prisma/__generated__/$1'
+		'^uuid$': '<rootDir>/test/__mocks__/uuid.js',
+		'^argon2$': '<rootDir>/test/__mocks__/argon2.js',
+		'^ioredis$': '<rootDir>/test/__mocks__/ioredis.ts'
 	},
 
 	modulePaths: ['<rootDir>'],
-	testEnvironment: 'node'
+	testEnvironment: 'node',
+
+	transformIgnorePatterns: ['node_modules/(?!(uuid)/)']
 }
 
 export default config

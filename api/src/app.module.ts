@@ -6,12 +6,17 @@ import { CacheModule } from '@/libs/redis/cache/cache.module'
 import { RedisModule } from '@/libs/redis/redis.module'
 import { PrismaModule } from '@/prisma/prisma.module'
 
+import { AuthModule } from './auth/auth.module'
+import { UserModule } from './user/user.module'
+
 @Module({
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true, ignoreEnvFile: !IS_DEV_ENV }),
 		RedisModule,
 		CacheModule,
-		PrismaModule
+		PrismaModule,
+		AuthModule,
+		UserModule
 	],
 	controllers: [],
 	providers: []

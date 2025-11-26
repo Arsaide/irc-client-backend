@@ -4,7 +4,7 @@ import {
 	type ValidatorConstraintInterface
 } from 'class-validator'
 
-// import { RegisterDto } from '@/auth/dto/register.dto'
+import { RegisterDto } from '@/auth/dto'
 
 @ValidatorConstraint({ name: 'isPasswordMatching', async: false })
 export class IsPasswordMatchingConstraint
@@ -14,7 +14,7 @@ export class IsPasswordMatchingConstraint
 		passwordRepeat: string,
 		args: ValidationArguments
 	): boolean {
-		const obj = args.object as { password: string }
+		const obj = args.object as RegisterDto
 		return obj.password === passwordRepeat
 	}
 
