@@ -5,16 +5,28 @@ import Redis from 'ioredis'
 import { REDIS, REDIS_SESSION, redisProviders } from './redis.provider'
 
 jest.mock('ioredis', () => {
+	class RedisMock {
+		status = 'ready'
+
+		constructor() {}
+
+		on(event: string, cb: () => void) {
+			if (event === 'connect' || event === 'ready') {
+				cb()
+			}
+		}
+
+		connect = jest.fn().mockResolvedValue(undefined)
+		disconnect = jest.fn().mockResolvedValue(undefined)
+		quit = jest.fn().mockResolvedValue(undefined)
+
+		set = jest.fn().mockResolvedValue('OK')
+		get = jest.fn().mockResolvedValue('some-value')
+		del = jest.fn().mockResolvedValue(1)
+	}
+
 	return {
-		__esModule: true,
-		default: jest.fn().mockImplementation(() => ({
-			on: jest.fn(),
-			set: jest.fn(),
-			get: jest.fn(),
-			connect: jest.fn().mockResolvedValue(true),
-			quit: jest.fn(),
-			disconnect: jest.fn()
-		}))
+		default: RedisMock
 	}
 })
 
@@ -64,21 +76,19 @@ describe('RedisProvider', () => {
 	it('should handle redis connection errors', async () => {
 		const error = new Error('Redis connection error')
 
-		const errorSpy = jest
-			.spyOn(redisService, 'connect')
-			.mockRejectedValueOnce(error)
+		;(redisService.connect as jest.Mock).mockRejectedValueOnce(error)
 
 		await expect(redisService.connect()).rejects.toThrow(error)
 
-		expect(errorSpy).toHaveBeenCalled()
+		expect(redisService.connect).toHaveBeenCalled()
 	})
 
 	it('should set and get values from Redis', async () => {
 		const key = 'test-key'
 		const value = 'test-value'
 
-		jest.spyOn(redisService, 'set').mockResolvedValue('OK')
-		jest.spyOn(redisService, 'get').mockResolvedValue(value)
+		;(redisService.set as jest.Mock).mockResolvedValue('OK')
+		;(redisService.get as jest.Mock).mockResolvedValue(value)
 
 		await redisService.set(key, value)
 		const result = await redisService.get(key)
