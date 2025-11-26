@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common'
+import { Logger, ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import type { NestExpressApplication } from '@nestjs/platform-express'
@@ -14,6 +14,8 @@ import { AppModule } from './app.module'
 import { ms, parseBoolean, StringValue } from './libs/common/utils'
 
 async function bootstrap() {
+	const logger = new Logger('BOOTSTRAP')
+
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
 		logger:
 			process.env.NODE_ENV === 'development'
@@ -26,7 +28,11 @@ async function bootstrap() {
 	const config = app.get(ConfigService)
 
 	const redis = app.select(AppModule).get<Redis>(REDIS)
-	await redis.set('healthcheck', 'ok')
+	try {
+		await redis.set('healthcheck', 'ok')
+	} catch (e) {
+		logger.error('Redis healthcheck failed', e)
+	}
 
 	const redisSessionClient = app.get(REDIS_SESSION)
 

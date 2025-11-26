@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "./__generated__"
 }
 
 datasource db {
@@ -14,9 +13,34 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  email    String @unique
-  password String
-  name     String @unique @map("display_name")
+  email              String   @unique
+  password           String
+  name               String   @unique @map("display_name")
+  isVerified         Boolean  @default(false) @map("is_verified")
+  isTwoFactorEnabled Boolean  @default(false) @map("is_two_factor_enabled")
+  role               UserRole @default(REGULAR)
 
   @@map("users")
+}
+
+model Token {
+  id        String    @id @default(uuid())
+  email     String
+  token     String    @unique
+  type      TokenType
+  expiresIn DateTime  @map("expires_in")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("tokens")
+}
+
+enum TokenType {
+  VERIFICATION
+  TWO_FACTOR
+  PASSWORD_RESET
+}
+
+enum UserRole {
+  REGULAR
+  ADMIN
 }

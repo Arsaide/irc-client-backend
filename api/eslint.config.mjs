@@ -20,14 +20,22 @@ export default tseslint.config(
 			sourceType: 'commonjs',
 			parserOptions: {
 				projectService: true,
-				tsconfigRootDir: import.meta.dirname
+				tsconfigRootDir: import.meta.dirname,
+				ecmaFeatures: {
+					jsx: true
+				}
+			}
+		},
+		settings: {
+			react: {
+				version: 'detect'
 			}
 		}
 	},
 	{
 		rules: {
-			'prettier/prettier': ['error', { endOfLine: 'auto' }],
-			'@typescript-eslint/no-floating-promises': 'warn',
+			'prettier/prettier': ['warn', { endOfLine: 'auto' }],
+			'@typescript-eslint/no-floating-promises': 'off',
 			'@typescript-eslint/no-unsafe-argument': 'off',
 			'@typescript-eslint/no-explicit-any': 'error',
 			'@typescript-eslint/consistent-type-assertions': [
