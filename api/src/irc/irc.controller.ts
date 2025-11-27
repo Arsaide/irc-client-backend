@@ -1,5 +1,8 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common'
+import { UserRole } from '@prisma/client'
 import { IsNotEmpty, IsString } from 'class-validator'
+
+import { Authorization } from '@/auth/decorators'
 
 import { IrcService } from './irc.service'
 
@@ -17,6 +20,7 @@ export class SendMessageDto {
 export class IrcController {
 	constructor(private readonly ircService: IrcService) {}
 
+	@Authorization(UserRole.ADMIN)
 	@Post('send')
 	@HttpCode(HttpStatus.OK)
 	sendMessage(@Body() dto: SendMessageDto): { success: boolean } {

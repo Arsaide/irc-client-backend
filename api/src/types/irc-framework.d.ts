@@ -39,6 +39,7 @@ declare module 'irc-framework' {
 		join(channel: string, key?: string): void
 		part(channel: string, message?: string): void
 		say(target: string, message: string): void
+		raw(command: string, ...args: unknown[]): void
 
 		on(event: 'registered', listener: (event: never) => void): this
 		on(event: 'message', listener: (event: IrcMessageEvent) => void): this

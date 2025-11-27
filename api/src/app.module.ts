@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 
 import { AuthModule } from '@/auth/auth.module'
+import { ChatsModule } from '@/irc/chats/chats.module'
 import { IrcModule } from '@/irc/irc.module'
 import { IS_DEV_ENV } from '@/libs/common/utils'
 import { CacheModule } from '@/libs/redis/cache/cache.module'
@@ -17,7 +18,8 @@ import { UserModule } from '@/user/user.module'
 		PrismaModule,
 		AuthModule,
 		UserModule,
-		IrcModule
+		IrcModule,
+		ChatsModule
 	],
 	controllers: [],
 	providers: []

@@ -76,4 +76,23 @@ export class IrcService implements OnModuleInit {
 		this.logger.debug(`Sending message to ${target}: ${message}`)
 		this.client.say(target, message)
 	}
+
+	public joinChannel(channel: string): void {
+		if (!channel.startsWith('#')) {
+			this.logger.warn(`Channel name must start with #: ${channel}`)
+			return
+		}
+
+		this.logger.log(`Bot joining channel: ${channel}`)
+		this.client.join(channel)
+	}
+
+	public leaveChannel(channel: string): void {
+		this.logger.log(`Bot leaving channel: ${channel}`)
+		this.client.part(channel)
+	}
+
+	public setTopic(channel: string, topic: string): void {
+		this.client.raw('TOPIC', channel, topic)
+	}
 }

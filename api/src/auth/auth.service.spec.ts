@@ -160,6 +160,7 @@ describe('AuthService', () => {
 			const user: User = {
 				id: 'user-id',
 				name: 'Test User',
+				ircNickname: 'test_nickname',
 				email: dto.email,
 				createdAt: new Date(Date.now() - 5000),
 				updatedAt: new Date(Date.now() - 1000),
