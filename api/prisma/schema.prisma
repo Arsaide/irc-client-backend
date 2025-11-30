@@ -13,12 +13,16 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  email              String   @unique
-  password           String
-  name               String   @unique @map("display_name")
-  isVerified         Boolean  @default(false) @map("is_verified")
-  isTwoFactorEnabled Boolean  @default(false) @map("is_two_factor_enabled")
-  role               UserRole @default(REGULAR)
+  email       String   @unique
+  password    String
+  name        String   @unique @map("display_name")
+  ircNickname String?  @unique @map("irc_nickname")
+  role        UserRole @default(REGULAR)
+
+  isVerified         Boolean @default(false) @map("is_verified")
+  isTwoFactorEnabled Boolean @default(false) @map("is_two_factor_enabled")
+
+  chats ChatMember[]
 
   @@map("users")
 }
@@ -32,6 +36,41 @@ model Token {
   createdAt DateTime  @default(now()) @map("created_at")
 
   @@map("tokens")
+}
+
+model Chat {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  title String
+
+  ircChannelName String @unique @map("irc_channel_name")
+
+  ownerId String @map("owner_id")
+
+  members ChatMember[]
+
+  @@map("chats")
+}
+
+model ChatMember {
+  id       String   @id @default(uuid())
+  joinedAt DateTime @default(now()) @map("joined_at")
+
+  userId String   @map("user_id")
+  chatId String   @map("chat_id")
+  role   ChatRole @default(MEMBER)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chatId])
+  @@map("chat_members")
+}
+
+enum ChatRole {
+  OWNER
+  MEMBER
 }
 
 enum TokenType {

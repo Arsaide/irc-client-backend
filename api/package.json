@@ -37,6 +37,7 @@
     "cookie-parser": "^1.4.7",
     "express-session": "^1.18.2",
     "ioredis": "^5.8.2",
+    "irc-framework": "^4.14.0",
     "pg": "^8.16.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
