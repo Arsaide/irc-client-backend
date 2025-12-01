@@ -55,7 +55,12 @@ export class CacheService {
 
 	public async set<T>(key: string, value: T, ttlSec?: number): Promise<void> {
 		try {
-			await this.redis.set(key, JSON.stringify(value), 'EX', ttlSec)
+			await this.redis.set(
+				key,
+				JSON.stringify(value),
+				'EX' as const,
+				ttlSec as number
+			)
 		} catch (error) {
 			this.logger.warn(
 				`Redis set fallback for key=${key}: ${(error as Error).message}`

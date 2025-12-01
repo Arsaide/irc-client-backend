@@ -3,7 +3,7 @@ import {
 	Injectable,
 	NotFoundException
 } from '@nestjs/common'
-import { TokenType } from '@prisma/client'
+import { TokenType } from '@prisma/__generated__'
 import { hash } from 'argon2'
 import { v4 as uuidv4 } from 'uuid'
 

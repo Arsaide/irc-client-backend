@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
 
-import { NewPasswordDto, ResetPasswordDto } from '@/auth/password-recovery/dto'
-
+import { NewPasswordDto, ResetPasswordDto } from './dto'
 import { PasswordRecoveryController } from './password-recovery.controller'
 import { PasswordRecoveryService } from './password-recovery.service'
 

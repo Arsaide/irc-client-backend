@@ -5,7 +5,7 @@ import {
 	Injectable,
 	NotFoundException
 } from '@nestjs/common'
-import { TokenType } from '@prisma/client'
+import { TokenType } from '@prisma/__generated__'
 import { Request } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 

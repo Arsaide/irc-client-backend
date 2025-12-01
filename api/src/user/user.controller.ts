@@ -8,8 +8,8 @@ import {
 	Patch,
 	Req
 } from '@nestjs/common'
-import { UserRole } from '@prisma/client'
-import { Request } from 'express'
+import { UserRole } from '@prisma/__generated__'
+import type { Request } from 'express'
 
 import { Authorization } from '@/auth/decorators/auth.decorator'
 import { Authorized } from '@/auth/decorators/autorized.decorator'

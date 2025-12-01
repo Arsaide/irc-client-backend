@@ -75,5 +75,36 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.9.2",
     "typescript-eslint": "^8.20.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts",
+      "tsx"
+    ],
+    "rootDir": "src",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)sx?$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node",
+    "modulePaths": [
+      "<rootDir>"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1",
+      "^@prisma/__generated__$": "<rootDir>/../prisma/__generated__",
+      "^uuid$": "<rootDir>/test/__mocks__/uuid.js",
+      "^argon2$": "<rootDir>/test/__mocks__/argon2.js",
+      "^ioredis$": "<rootDir>/test/__mocks__/ioredis.ts"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ]
   }
 }

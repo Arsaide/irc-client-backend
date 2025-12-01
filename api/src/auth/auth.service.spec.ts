@@ -6,17 +6,17 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { User, UserRole } from '@prisma/client'
+import { User, UserRole } from '@prisma/__generated__'
 import * as argon2 from 'argon2'
-import { Request, Response } from 'express'
+import type { Request, Response } from 'express'
 
-import { LoginDto } from '@/auth/dto'
-import { EmailConfirmationService } from '@/auth/email-confirmation/email-confirmation.service'
-import { TwoFactorAuthService } from '@/auth/two-factor-auth/two-factor-auth.service'
-import { PrismaService } from '@/prisma/prisma.service'
-import { UserService } from '@/user/user.service'
+import { PrismaService } from '../prisma/prisma.service'
+import { UserService } from '../user/user.service'
 
 import { AuthService } from './auth.service'
+import { LoginDto } from './dto'
+import { EmailConfirmationService } from './email-confirmation/email-confirmation.service'
+import { TwoFactorAuthService } from './two-factor-auth/two-factor-auth.service'
 
 jest.mock('argon2')
 

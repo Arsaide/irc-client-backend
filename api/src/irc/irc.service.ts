@@ -2,12 +2,17 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Client, IrcErrorEvent, IrcMessageEvent } from 'irc-framework'
 
+import { PrismaService } from '@/prisma/prisma.service'
+
 @Injectable()
 export class IrcService implements OnModuleInit {
 	private readonly client: Client
 	private readonly logger = new Logger(IrcService.name)
 
-	constructor(private readonly configService: ConfigService) {
+	constructor(
+		private readonly configService: ConfigService,
+		private readonly prisma: PrismaService
+	) {
 		this.client = new Client()
 	}
 
@@ -65,11 +70,48 @@ export class IrcService implements OnModuleInit {
 		})
 	}
 
-	private handleMessage(event: IrcMessageEvent): void {
+	private async handleMessage(event: IrcMessageEvent) {
 		const myNick = this.configService.get<string>('IRC_NICK')
 		if (event.nick === myNick) return
 
 		this.logger.log(`[${event.target}] <${event.nick}>: ${event.message}`)
+
+		if (!event.target.startsWith('#')) return
+
+		try {
+			const chat = await this.prisma.chat.findUnique({
+				where: { ircChannelName: event.target }
+			})
+
+			if (!chat) {
+				return
+			}
+
+			const user = await this.prisma.user.findUnique({
+				where: { ircNickname: event.nick }
+			})
+
+			if (!user) {
+				this.logger.warn(
+					`Message from unknown user (nick mismatch): ${event.nick}`
+				)
+				return
+			}
+
+			await this.prisma.message.create({
+				data: {
+					text: event.message,
+					chatId: chat.id,
+					userId: user.id
+				}
+			})
+
+			this.logger.verbose(
+				`Saved message from ${event.nick} in ${chat.title}`
+			)
+		} catch (error) {
+			this.logger.error('Failed to save message history', error)
+		}
 	}
 
 	public sendMessage(target: string, message: string): void {
@@ -82,6 +124,9 @@ export class IrcService implements OnModuleInit {
 			this.logger.warn(`Channel name must start with #: ${channel}`)
 			return
 		}
+
+		// TODO Нужно сделать так что бы сервер подключался ко всем чатам и читал их все
+		// TODO или придумать какой то другой метод. Нужно решить
 
 		this.logger.log(`Bot joining channel: ${channel}`)
 		this.client.join(channel)

@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client'
+import { UserRole } from '@prisma/__generated__'
 import {
 	IsBoolean,
 	IsEmail,

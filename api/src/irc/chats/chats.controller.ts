@@ -8,7 +8,7 @@ import {
 	ParseUUIDPipe,
 	Post
 } from '@nestjs/common'
-import { UserRole } from '@prisma/client'
+import { UserRole } from '@prisma/__generated__'
 
 import { Authorization, Authorized } from '@/auth/decorators'
 import { AddMemberDto, CreateChatDto } from '@/irc/chats/dto'
@@ -44,5 +44,12 @@ export class ChatsController {
 		@Body() dto: AddMemberDto
 	) {
 		return this.chatsService.addMembers(chatId, dto.userIds)
+	}
+
+	@Authorization(UserRole.REGULAR, UserRole.ADMIN)
+	@Get(':id/messages')
+	@HttpCode(HttpStatus.OK)
+	public async getMessages(@Param('id', ParseUUIDPipe) chatId: string) {
+		return this.chatsService.getChatMessages(chatId)
 	}
 }

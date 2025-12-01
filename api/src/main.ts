@@ -3,15 +3,15 @@ import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import type { NestExpressApplication } from '@nestjs/platform-express'
 import { RedisStore } from 'connect-redis'
-import * as cookieParser from 'cookie-parser'
+import cookieParser from 'cookie-parser'
 import * as express from 'express'
-import * as session from 'express-session'
+import session from 'express-session'
 import Redis from 'ioredis'
 
 import { REDIS, REDIS_SESSION } from '@/libs/redis/redis.provider'
 
 import { AppModule } from './app.module'
-import { ms, parseBoolean, StringValue } from './libs/common/utils'
+import { ms, parseBoolean, type StringValue } from './libs/common/utils'
 
 async function bootstrap() {
 	const logger = new Logger('BOOTSTRAP')

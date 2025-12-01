@@ -1,5 +1,5 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import { Request } from 'express'
+import type { Request } from 'express'
 import Redis from 'ioredis'
 
 import { REDIS } from '@/libs/redis/redis.provider'
@@ -50,6 +50,7 @@ export class SessionService {
 			const freshUser = await this.userService.findById(userId)
 			req.session.user = {
 				...req.session.user,
+				id: freshUser.id,
 				role: freshUser.role
 			}
 

@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { UserRole } from '@prisma/client'
-import { Request } from 'express'
+import { UserRole } from '@prisma/__generated__'
+import type { Request } from 'express'
 
 import { REDIS } from '@/libs/redis/redis.provider'
 import { UserService } from '@/user/user.service'
+
+import type { TestRequest } from '../../../test/types/session-user.type'
 
 import { SessionService } from './session.service'
 
@@ -46,9 +48,9 @@ describe('SessionService', () => {
 			const req = {
 				session: {
 					user: { id: userId, role: UserRole.REGULAR },
-					save: jest.fn(cb => cb(null))
+					save: jest.fn((cb: (err?: unknown) => void) => cb())
 				}
-			} as unknown as Request
+			} as unknown as TestRequest
 
 			mockUserService.findById.mockResolvedValue(freshUser)
 
@@ -72,9 +74,7 @@ describe('SessionService', () => {
 
 			await service.markUserForRefresh(targetUserId, req)
 
-			// 1. UserService не нужен, так как мы не обновляем текущую сессию
 			expect(mockUserService.findById).not.toHaveBeenCalled()
-			// 2. Должны установить флаг в Redis
 			expect(mockRedis.set).toHaveBeenCalledWith(
 				`needs_refresh:${targetUserId}`,
 				'1',
@@ -114,7 +114,7 @@ describe('SessionService', () => {
 					user: { id: userId, role: 'OLD' },
 					save: jest.fn(cb => cb(null))
 				}
-			} as unknown as Request
+			} as unknown as TestRequest
 
 			mockUserService.findById.mockResolvedValue({
 				id: userId,
@@ -132,9 +132,7 @@ describe('SessionService', () => {
 			const currentId = 'my-id'
 			const req = {} as Request
 
-			// Шпионим за методом markUserForRefresh внутри того же инстанса
 			const markSpy = jest.spyOn(service, 'markUserForRefresh')
-			// Нужно замокать реализацию, чтобы не лезть в реальную логику (хотя можно и оставить)
 			markSpy.mockResolvedValue(undefined)
 
 			await service.refreshUserSession(targetId, currentId, req)
