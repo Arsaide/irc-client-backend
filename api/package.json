@@ -27,6 +27,8 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/platform-socket.io": "^11.1.9",
+    "@nestjs/websockets": "^11.1.9",
     "@prisma/client": "6.12.0",
     "@react-email/components": "^1.0.1",
     "@react-email/html": "^0.0.11",
@@ -44,6 +46,7 @@
     "redis": "^5.10.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "socket.io": "^4.8.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
@@ -102,7 +105,8 @@
       "^@prisma/__generated__$": "<rootDir>/../prisma/__generated__",
       "^uuid$": "<rootDir>/test/__mocks__/uuid.js",
       "^argon2$": "<rootDir>/test/__mocks__/argon2.js",
-      "^ioredis$": "<rootDir>/test/__mocks__/ioredis.ts"
+      "^ioredis$": "<rootDir>/test/__mocks__/ioredis.ts",
+      "^irc-framework$": "<rootDir>/test/__mocks__/irc-framework.ts"
     },
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
