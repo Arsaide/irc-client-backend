@@ -5,8 +5,6 @@ import type { Request } from 'express'
 import { REDIS } from '@/libs/redis/redis.provider'
 import { UserService } from '@/user/user.service'
 
-import type { TestRequest } from '../../../test/types/session-user.type'
-
 import { SessionService } from './session.service'
 
 describe('SessionService', () => {
@@ -48,16 +46,16 @@ describe('SessionService', () => {
 			const req = {
 				session: {
 					user: { id: userId, role: UserRole.REGULAR },
-					save: jest.fn((cb: (err?: unknown) => void) => cb())
+					save: jest.fn(cb => cb(null))
 				}
-			} as unknown as TestRequest
+			} as unknown as Request
 
 			mockUserService.findById.mockResolvedValue(freshUser)
 
 			await service.markUserForRefresh(userId, req)
 
 			expect(mockUserService.findById).toHaveBeenCalledWith(userId)
-			expect(req.session.user.role).toBe(UserRole.ADMIN)
+			expect(req.session.user!.role).toBe(UserRole.ADMIN)
 			expect(req.session.save).toHaveBeenCalled()
 			expect(mockRedis.set).not.toHaveBeenCalled()
 		})
@@ -114,7 +112,7 @@ describe('SessionService', () => {
 					user: { id: userId, role: 'OLD' },
 					save: jest.fn(cb => cb(null))
 				}
-			} as unknown as TestRequest
+			} as unknown as Request
 
 			mockUserService.findById.mockResolvedValue({
 				id: userId,
@@ -123,7 +121,7 @@ describe('SessionService', () => {
 
 			await service.refreshUserSession(userId, userId, req)
 
-			expect(req.session.user.role).toBe('NEW')
+			expect(req.session.user!.role).toBe('NEW')
 			expect(req.session.save).toHaveBeenCalled()
 		})
 
@@ -132,7 +130,9 @@ describe('SessionService', () => {
 			const currentId = 'my-id'
 			const req = {} as Request
 
+			// Шпионим за методом markUserForRefresh внутри того же инстанса
 			const markSpy = jest.spyOn(service, 'markUserForRefresh')
+			// Нужно замокать реализацию, чтобы не лезть в реальную логику (хотя можно и оставить)
 			markSpy.mockResolvedValue(undefined)
 
 			await service.refreshUserSession(targetId, currentId, req)

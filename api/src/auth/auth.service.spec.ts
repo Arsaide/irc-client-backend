@@ -10,13 +10,13 @@ import { User, UserRole } from '@prisma/__generated__'
 import * as argon2 from 'argon2'
 import type { Request, Response } from 'express'
 
-import { PrismaService } from '../prisma/prisma.service'
-import { UserService } from '../user/user.service'
+import { LoginDto } from '@/auth/dto'
+import { EmailConfirmationService } from '@/auth/email-confirmation/email-confirmation.service'
+import { TwoFactorAuthService } from '@/auth/two-factor-auth/two-factor-auth.service'
+import { PrismaService } from '@/prisma/prisma.service'
+import { UserService } from '@/user/user.service'
 
 import { AuthService } from './auth.service'
-import { LoginDto } from './dto'
-import { EmailConfirmationService } from './email-confirmation/email-confirmation.service'
-import { TwoFactorAuthService } from './two-factor-auth/two-factor-auth.service'
 
 jest.mock('argon2')
 

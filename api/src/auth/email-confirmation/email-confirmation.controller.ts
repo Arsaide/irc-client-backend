@@ -6,7 +6,7 @@ import {
 	Post,
 	Req
 } from '@nestjs/common'
-import type { Request } from 'express'
+import { Request } from 'express'
 
 import { ConfirmationDto } from '@/auth/email-confirmation/dto'
 

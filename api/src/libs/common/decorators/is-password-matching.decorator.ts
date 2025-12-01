@@ -7,7 +7,9 @@ import {
 import { RegisterDto } from '@/auth/dto'
 
 @ValidatorConstraint({ name: 'isPasswordMatching', async: false })
-export class IsPasswordMatchingConstraint implements ValidatorConstraintInterface {
+export class IsPasswordMatchingConstraint
+	implements ValidatorConstraintInterface
+{
 	public validate(
 		passwordRepeat: string,
 		args: ValidationArguments

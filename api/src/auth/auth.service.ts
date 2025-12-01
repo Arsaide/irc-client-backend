@@ -8,9 +8,9 @@ import {
 	UnauthorizedException
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { User } from '@prisma/__generated__'
+import type { User } from '@prisma/__generated__'
 import { verify } from 'argon2'
-import { Request, Response } from 'express'
+import type { Request, Response } from 'express'
 
 import { LoginDto, RegisterDto } from '@/auth/dto'
 import { EmailConfirmationService } from '@/auth/email-confirmation/email-confirmation.service'

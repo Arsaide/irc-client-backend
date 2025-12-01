@@ -1,5 +1,4 @@
 import {
-	BadRequestException,
 	ConflictException,
 	forwardRef,
 	Inject,
@@ -8,10 +7,9 @@ import {
 } from '@nestjs/common'
 import { Prisma } from '@prisma/__generated__'
 import * as argon2 from 'argon2'
-import { Request } from 'express'
+import type { Request } from 'express'
 
 import { SessionService } from '@/auth/session/session.service'
-import { generateSlugUtil } from '@/libs/common/utils'
 import { PrismaService } from '@/prisma/prisma.service'
 import { UpdateOwnProfileDto, UpdateUserProfileDto } from '@/user/dto'
 
@@ -65,19 +63,11 @@ export class UserService {
 			)
 		}
 
-		if (!password) {
-			throw new BadRequestException('Password is required')
-		}
-
-		const slug = generateSlugUtil(name)
-		const ircNickname = `${slug}_${Math.floor(Math.random() * 1000)}`
-
 		return this.prisma.user.create({
 			data: {
 				email,
 				password: await argon2.hash(password),
 				name,
-				ircNickname,
 				isVerified
 			}
 		})

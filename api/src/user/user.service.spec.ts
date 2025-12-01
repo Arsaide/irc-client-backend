@@ -6,8 +6,8 @@ import type { Request } from 'express'
 
 import { SessionService } from '@/auth/session/session.service'
 import { PrismaService } from '@/prisma/prisma.service'
+import { UpdateUserProfileDto } from '@/user/dto'
 
-import { UpdateUserProfileDto } from './dto'
 import { UserService } from './user.service'
 
 jest.mock('argon2')
