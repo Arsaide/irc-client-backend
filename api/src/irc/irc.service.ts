@@ -50,11 +50,13 @@ export class IrcService implements OnModuleInit {
 		this.registerEvents(channel)
 	}
 
-	private registerEvents(channel: string): void {
-		this.client.on('registered', () => {
+	private registerEvents(defaultChannel: string): void {
+		this.client.on('registered', async () => {
 			this.logger.log('Connected to IRC server successfully!')
-			this.client.join(channel)
-			this.logger.log(`Joined channel: ${channel}`)
+			this.client.join(defaultChannel)
+			this.logger.log(`Joined default channel: ${defaultChannel}`)
+
+			await this.restoreChannels()
 		})
 
 		this.client.on('message', (event: IrcMessageEvent) => {
@@ -68,6 +70,28 @@ export class IrcService implements OnModuleInit {
 		this.client.on('close', () => {
 			this.logger.warn('IRC Connection closed')
 		})
+	}
+
+	private async restoreChannels() {
+		try {
+			const chats = await this.prisma.chat.findMany({
+				select: { ircChannelName: true }
+			})
+
+			if (chats.length === 0) return
+
+			this.logger.log(
+				`Found ${chats.length} active chats in DB. Restoring connections...`
+			)
+
+			for (const chat of chats) {
+				this.client.join(chat.ircChannelName)
+			}
+
+			this.logger.log(`Successfully rejoined ${chats.length} channels.`)
+		} catch (error) {
+			this.logger.error('Failed to restore channels on startup', error)
+		}
 	}
 
 	private async handleMessage(event: IrcMessageEvent) {
@@ -124,9 +148,6 @@ export class IrcService implements OnModuleInit {
 			this.logger.warn(`Channel name must start with #: ${channel}`)
 			return
 		}
-
-		// TODO Нужно сделать так что бы сервер подключался ко всем чатам и читал их все
-		// TODO или придумать какой то другой метод. Нужно решить
 
 		this.logger.log(`Bot joining channel: ${channel}`)
 		this.client.join(channel)
