@@ -11,7 +11,7 @@ import {
 import { UserRole } from '@prisma/__generated__'
 
 import { Authorization, Authorized } from '@/auth/decorators'
-import { AddMemberDto, CreateChatDto } from '@/irc/chats/dto'
+import { AddMemberDto, CreateChatDto } from '@/irc/dto'
 
 import { ChatsService } from './chats.service'
 

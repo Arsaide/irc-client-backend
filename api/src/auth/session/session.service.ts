@@ -50,6 +50,7 @@ export class SessionService {
 			const freshUser = await this.userService.findById(userId)
 			req.session.user = {
 				...req.session.user,
+				id: freshUser.id,
 				role: freshUser.role
 			}
 
