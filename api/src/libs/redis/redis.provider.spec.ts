@@ -1,4 +1,3 @@
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import Redis from 'ioredis'
 
