@@ -5,52 +5,52 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-	{
-		ignores: ['eslint.config.mjs']
-	},
-	eslint.configs.recommended,
-	...tseslint.configs.recommendedTypeChecked,
-	eslintPluginPrettierRecommended,
-	{
-		languageOptions: {
-			globals: {
-				...globals.node,
-				...globals.jest
-			},
-			sourceType: 'commonjs',
-			parserOptions: {
-				projectService: true,
-				tsconfigRootDir: import.meta.dirname,
-				ecmaFeatures: {
-					jsx: true
-				}
-			}
-		},
-		settings: {
-			react: {
-				version: 'detect'
-			}
-		}
-	},
-	{
-		rules: {
-			'prettier/prettier': ['warn', { endOfLine: 'auto' }],
-			'@typescript-eslint/no-floating-promises': 'off',
-			'@typescript-eslint/no-unsafe-argument': 'off',
-			'@typescript-eslint/no-explicit-any': 'error',
-			'@typescript-eslint/consistent-type-assertions': [
-				'error',
-				{ assertionStyle: 'as', objectLiteralTypeAssertions: 'allow' }
-			],
-			'@typescript-eslint/no-unsafe-assignment': 'off',
-			'@typescript-eslint/no-unsafe-member-access': 'off',
-			'@typescript-eslint/no-unsafe-return': 'off',
-			'@typescript-eslint/no-unused-vars': 'warn',
-			'@typescript-eslint/no-unsafe-call': 'off',
-			'@typescript-eslint/no-base-to-string': 'off',
-			'@typescript-eslint/unbound-method': 'off',
-			'@typescript-eslint/restrict-template-expressions': 'off',
-			'@typescript-eslint/no-redundant-type-constituents': 'off'
-		}
-	}
+    {
+        ignores: ['eslint.config.mjs']
+    },
+    eslint.configs.recommended,
+    ...tseslint.configs.recommendedTypeChecked,
+    eslintPluginPrettierRecommended,
+    {
+        languageOptions: {
+            globals: {
+                ...globals.node,
+                ...globals.jest
+            },
+            sourceType: 'commonjs',
+            parserOptions: {
+                projectService: true,
+                tsconfigRootDir: import.meta.dirname,
+                ecmaFeatures: {
+                    jsx: true
+                }
+            }
+        },
+        settings: {
+            react: {
+                version: 'detect'
+            }
+        }
+    },
+    {
+        rules: {
+            'prettier/prettier': ['warn', { endOfLine: 'auto' }],
+            '@typescript-eslint/no-floating-promises': 'off',
+            '@typescript-eslint/no-unsafe-argument': 'off',
+            '@typescript-eslint/no-explicit-any': 'error',
+            '@typescript-eslint/consistent-type-assertions': [
+                'error',
+                { assertionStyle: 'as', objectLiteralTypeAssertions: 'allow' }
+            ],
+            '@typescript-eslint/no-unsafe-assignment': 'off',
+            '@typescript-eslint/no-unsafe-member-access': 'off',
+            '@typescript-eslint/no-unsafe-return': 'off',
+            '@typescript-eslint/no-unused-vars': 'warn',
+            '@typescript-eslint/no-unsafe-call': 'off',
+            '@typescript-eslint/no-base-to-string': 'off',
+            '@typescript-eslint/unbound-method': 'off',
+            '@typescript-eslint/restrict-template-expressions': 'off',
+            '@typescript-eslint/no-redundant-type-constituents': 'off'
+        }
+    }
 )

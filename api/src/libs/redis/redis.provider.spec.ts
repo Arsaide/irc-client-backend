@@ -1,8 +1,7 @@
-import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import Redis from 'ioredis'
 
-import RedisMock from '../../../test/__mocks__/ioredis'
+import RedisMock from '@/test/__mocks__/ioredis'
 
 import { REDIS, REDIS_SESSION, redisProviders } from './redis.provider'
 

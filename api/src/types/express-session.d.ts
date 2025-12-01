@@ -1,3 +1,4 @@
+import { UserRole } from '@prisma/__generated__'
 import 'express-session'
 
 declare module 'express-session' {

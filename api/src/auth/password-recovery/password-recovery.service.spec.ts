@@ -1,6 +1,6 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TokenType } from '@prisma/client'
+import { TokenType } from '@prisma/__generated__'
 import * as argon2 from 'argon2'
 
 import { ResetPasswordDto } from '@/auth/password-recovery/dto'

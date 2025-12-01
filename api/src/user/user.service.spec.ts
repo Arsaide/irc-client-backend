@@ -1,8 +1,8 @@
 import { ConflictException, NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { UserRole } from '@prisma/client'
+import { UserRole } from '@prisma/__generated__'
 import * as argon2 from 'argon2'
-import { Request } from 'express'
+import type { Request } from 'express'
 
 import { SessionService } from '@/auth/session/session.service'
 import { PrismaService } from '@/prisma/prisma.service'

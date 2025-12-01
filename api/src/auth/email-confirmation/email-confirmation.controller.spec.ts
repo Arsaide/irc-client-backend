@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { Request } from 'express'
+import type { Request } from 'express'
 
 import { ConfirmationDto } from '@/auth/email-confirmation/dto'
 

@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common'
-import { UserRole } from '@prisma/client'
+import { UserRole } from '@prisma/__generated__'
 import { IsNotEmpty, IsString } from 'class-validator'
 
 import { Authorization } from '@/auth/decorators'

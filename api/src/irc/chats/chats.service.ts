@@ -4,7 +4,7 @@ import {
 	Logger,
 	NotFoundException
 } from '@nestjs/common'
-import { ChatRole } from '@prisma/client'
+import { ChatRole } from '@prisma/__generated__'
 import { v4 as uuidv4 } from 'uuid'
 
 import { IrcService } from '@/irc/irc.service'
@@ -122,5 +122,21 @@ export class ChatsService {
 			this.logger.error(error)
 			throw new InternalServerErrorException('Could not add members')
 		}
+	}
+
+	public async getChatMessages(chatId: string) {
+		return this.prisma.message.findMany({
+			where: { chatId: chatId },
+			orderBy: { createdAt: 'asc' },
+			include: {
+				user: {
+					select: {
+						id: true,
+						name: true,
+						ircNickname: true
+					}
+				}
+			}
+		})
 	}
 }

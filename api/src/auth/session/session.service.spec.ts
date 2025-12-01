@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { UserRole } from '@prisma/client'
-import { Request } from 'express'
+import { UserRole } from '@prisma/__generated__'
+import type { Request } from 'express'
 
 import { REDIS } from '@/libs/redis/redis.provider'
 import { UserService } from '@/user/user.service'
@@ -55,7 +55,7 @@ describe('SessionService', () => {
 			await service.markUserForRefresh(userId, req)
 
 			expect(mockUserService.findById).toHaveBeenCalledWith(userId)
-			expect(req.session.user.role).toBe(UserRole.ADMIN)
+			expect(req.session.user!.role).toBe(UserRole.ADMIN)
 			expect(req.session.save).toHaveBeenCalled()
 			expect(mockRedis.set).not.toHaveBeenCalled()
 		})
@@ -72,9 +72,7 @@ describe('SessionService', () => {
 
 			await service.markUserForRefresh(targetUserId, req)
 
-			// 1. UserService не нужен, так как мы не обновляем текущую сессию
 			expect(mockUserService.findById).not.toHaveBeenCalled()
-			// 2. Должны установить флаг в Redis
 			expect(mockRedis.set).toHaveBeenCalledWith(
 				`needs_refresh:${targetUserId}`,
 				'1',
@@ -123,7 +121,7 @@ describe('SessionService', () => {
 
 			await service.refreshUserSession(userId, userId, req)
 
-			expect(req.session.user.role).toBe('NEW')
+			expect(req.session.user!.role).toBe('NEW')
 			expect(req.session.save).toHaveBeenCalled()
 		})
 

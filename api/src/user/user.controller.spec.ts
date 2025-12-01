@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing'
-import { Request } from 'express'
+import type { Request } from 'express'
 
 import { AuthGuard, RolesGuard } from '@/auth/guards'
 import { UpdateUserProfileDto } from '@/user/dto'

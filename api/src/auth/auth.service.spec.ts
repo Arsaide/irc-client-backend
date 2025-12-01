@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
-import { User, UserRole } from '@prisma/client'
+import { User, UserRole } from '@prisma/__generated__'
 import * as argon2 from 'argon2'
-import { Request, Response } from 'express'
+import type { Request, Response } from 'express'
 
 import { LoginDto } from '@/auth/dto'
 import { EmailConfirmationService } from '@/auth/email-confirmation/email-confirmation.service'

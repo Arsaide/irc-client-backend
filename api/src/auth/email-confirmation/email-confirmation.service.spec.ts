@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
-import { TokenType } from '@prisma/client'
-import { Request } from 'express'
+import { TokenType } from '@prisma/__generated__'
+import type { Request } from 'express'
 
 import { AuthService } from '@/auth/auth.service'
 import { ConfirmationDto } from '@/auth/email-confirmation/dto'
