@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Client, IrcErrorEvent, IrcMessageEvent } from 'irc-framework'
 
+import { EventsGateway } from '@/events/events.gateway'
 import { PrismaService } from '@/prisma/prisma.service'
 
 @Injectable()
@@ -11,7 +12,8 @@ export class IrcService implements OnModuleInit {
 
 	constructor(
 		private readonly configService: ConfigService,
-		private readonly prisma: PrismaService
+		private readonly prisma: PrismaService,
+		private readonly eventsGateway: EventsGateway
 	) {
 		this.client = new Client()
 	}
@@ -122,17 +124,26 @@ export class IrcService implements OnModuleInit {
 				return
 			}
 
-			await this.prisma.message.create({
+			const message = await this.prisma.message.create({
 				data: {
 					text: event.message,
 					chatId: chat.id,
 					userId: user.id
+				},
+				include: {
+					user: {
+						select: {
+							id: true,
+							name: true,
+							ircNickname: true
+						}
+					}
 				}
 			})
 
-			this.logger.verbose(
-				`Saved message from ${event.nick} in ${chat.title}`
-			)
+			this.logger.verbose(`Saved message from ${event.nick}...`)
+
+			this.eventsGateway.sendToRoom(chat.id, message)
 		} catch (error) {
 			this.logger.error('Failed to save message history', error)
 		}
