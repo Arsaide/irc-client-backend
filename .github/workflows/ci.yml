@@ -1,13 +1,16 @@
-name: CD - Production Deploy
+name: CI - Quality Assurance
 
 on:
   push:
     branches:
-      - main
+      - '**'
+    pull_request:
+      branches:
+        - '**'
 
 jobs:
-  Deploy:
-    name: Deploy to Production
+  Test&Build:
+    name: Check, Test & Build
     runs-on: ubuntu-latest
 
     steps:
@@ -21,18 +24,14 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: api/yarn.lock
 
-      - name: Install dependencies
+      - name: Install dependencies in API folder
         run: cd api && yarn install --frozen-lockfile
-
-      - name: Tests Run
-        run: cd api && yarn test
 
       - name: Run ESLint
         run: cd api && yarn lint
 
-      - name: Build Application
-        run: cd api && yarn build
+      - name: Run tests
+        run: cd api && yarn test
 
-      - name: Deployment
-        run: |
-          echo "Simulating deployment :)"
+      - name: Build Project
+        run: cd api && yarn build
