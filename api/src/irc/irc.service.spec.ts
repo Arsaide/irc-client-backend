@@ -2,6 +2,7 @@ import { ConfigService } from '@nestjs/config'
 import { Test, TestingModule } from '@nestjs/testing'
 import type { IrcMessageEvent } from 'irc-framework'
 
+import { EventsGateway } from '@/events/events.gateway'
 import { PrismaService } from '@/prisma/prisma.service'
 import { mockIrcClient } from '@/test/__mocks__/irc-framework'
 
@@ -31,12 +32,17 @@ describe('IrcService', () => {
 		message: { create: jest.fn() }
 	}
 
+	const mockEventsGateway = {
+		sendToRoom: jest.fn()
+	}
+
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
 			providers: [
 				IrcService,
 				{ provide: ConfigService, useValue: mockConfigService },
-				{ provide: PrismaService, useValue: mockPrismaService }
+				{ provide: PrismaService, useValue: mockPrismaService },
+				{ provide: EventsGateway, useValue: mockEventsGateway }
 			]
 		}).compile()
 
@@ -53,10 +59,12 @@ describe('IrcService', () => {
 			service.onModuleInit()
 
 			expect(mockIrcClient.connect).toHaveBeenCalled()
+
 			expect(mockIrcClient.on).toHaveBeenCalledWith(
 				'registered',
 				expect.any(Function)
 			)
+
 			expect(mockIrcClient.on).toHaveBeenCalledWith(
 				'message',
 				expect.any(Function)
@@ -113,6 +121,17 @@ describe('IrcService', () => {
 			;(prisma.user.findUnique as jest.Mock).mockResolvedValue({
 				id: 'user-id'
 			})
+			;(prisma.message.create as jest.Mock).mockResolvedValue({
+				id: 'msg-id',
+				text: 'Hello',
+				chatId: 'chat-id',
+				userId: 'user-id',
+				createdAt: new Date(),
+				user: {
+					id: 'user-id',
+					ircNickname: 'UserNick'
+				}
+			})
 
 			await triggerMessageEvent({
 				nick: 'UserNick',
@@ -127,8 +146,11 @@ describe('IrcService', () => {
 				where: { ircNickname: 'UserNick' }
 			})
 			expect(prisma.message.create).toHaveBeenCalledWith({
-				data: { text: 'Hello', chatId: 'chat-id', userId: 'user-id' }
+				data: { text: 'Hello', chatId: 'chat-id', userId: 'user-id' },
+				include: expect.any(Object)
 			})
+
+			expect(mockEventsGateway.sendToRoom).toHaveBeenCalled()
 		})
 	})
 
