@@ -36,14 +36,14 @@ export class AuthService {
 		})
 
 		if (isExist) {
-			if (!isExist.isVerified) {
-				await this.emailConfirmationService.sendVerificationToken(
-					isExist.email
-				)
-				throw new UnauthorizedException(
-					'Email is not verified. Please check your email and verify your account.'
-				)
-			}
+			// if (!isExist.isVerified) {
+			// 	await this.emailConfirmationService.sendVerificationToken(
+			// 		isExist.email
+			// 	)
+			// 	throw new UnauthorizedException(
+			// 		'Email is not verified. Please check your email and verify your account.'
+			// 	)
+			// }
 
 			throw new ConflictException(
 				'User already exists. Please use another email'
@@ -54,10 +54,10 @@ export class AuthService {
 			dto.email,
 			dto.password,
 			dto.name,
-			false
+			true
 		)
 
-		await this.emailConfirmationService.sendVerificationToken(newUser.email)
+		// await this.emailConfirmationService.sendVerificationToken(newUser.email)
 
 		return {
 			message: `You are successfully registered. Please you need to verify your email "${dto.email}". Message with verification link has been sent to your email.`

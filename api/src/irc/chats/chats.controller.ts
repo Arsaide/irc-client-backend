@@ -11,7 +11,11 @@ import {
 import { UserRole } from '@prisma/__generated__'
 
 import { Authorization, Authorized } from '@/auth/decorators'
-import { AddMemberDto, CreateChatDto } from '@/irc/chats/dto'
+import {
+	AddMemberDto,
+	CreateChatDto,
+	SendChatMessageDto
+} from '@/irc/chats/dto'
 
 import { ChatsService } from './chats.service'
 
@@ -51,5 +55,16 @@ export class ChatsController {
 	@HttpCode(HttpStatus.OK)
 	public async getMessages(@Param('id', ParseUUIDPipe) chatId: string) {
 		return this.chatsService.getChatMessages(chatId)
+	}
+
+	@Authorization(UserRole.REGULAR, UserRole.ADMIN)
+	@Post(':id/messages')
+	@HttpCode(HttpStatus.CREATED)
+	public sendMessage(
+		@Param('id', ParseUUIDPipe) chatId: string,
+		@Authorized('id') userId: string,
+		@Body() dto: SendChatMessageDto
+	) {
+		return this.chatsService.sendChatMessage(chatId, userId, dto)
 	}
 }

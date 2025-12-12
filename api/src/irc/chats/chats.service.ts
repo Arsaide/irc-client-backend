@@ -7,6 +7,8 @@ import {
 import { ChatRole } from '@prisma/__generated__'
 import { v4 as uuidv4 } from 'uuid'
 
+import { EventsGateway } from '@/events/events.gateway'
+import { SendChatMessageDto } from '@/irc/chats/dto'
 import { IrcService } from '@/irc/irc.service'
 import { generateIrcNames } from '@/libs/common/utils'
 import { PrismaService } from '@/prisma/prisma.service'
@@ -16,7 +18,8 @@ export class ChatsService {
 	private readonly logger = new Logger(ChatsService.name)
 	constructor(
 		private readonly prisma: PrismaService,
-		private readonly ircService: IrcService
+		private readonly ircService: IrcService,
+		private readonly eventsGateway: EventsGateway
 	) {}
 
 	public async createChat(userId: string, title: string) {
@@ -138,5 +141,63 @@ export class ChatsService {
 				}
 			}
 		})
+	}
+
+	public async sendChatMessage(
+		chatId: string,
+		userId: string,
+		dto: SendChatMessageDto
+	) {
+		const chat = await this.prisma.chat.findUnique({
+			where: { id: chatId }
+		})
+
+		if (!chat) {
+			throw new NotFoundException('Chat not found')
+		}
+
+		const member = await this.prisma.chatMember.findUnique({
+			where: {
+				userId_chatId: {
+					chatId: chatId,
+					userId: userId
+				}
+			}
+		})
+
+		if (!member) {
+			throw new NotFoundException('You are not a member of this chat')
+		}
+
+		const user = await this.prisma.user.findUnique({
+			where: { id: userId }
+		})
+
+		if (!user || !user.ircNickname) {
+			throw new NotFoundException('User IRC nickname not set')
+		}
+
+		this.ircService.sendMessage(chat.ircChannelName, dto.text)
+
+		const message = await this.prisma.message.create({
+			data: {
+				text: dto.text,
+				chatId: chatId,
+				userId: userId
+			},
+			include: {
+				user: {
+					select: {
+						id: true,
+						name: true,
+						ircNickname: true
+					}
+				}
+			}
+		})
+
+		this.eventsGateway.sendToRoom(chatId, message)
+
+		return message
 	}
 }

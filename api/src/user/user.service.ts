@@ -21,6 +21,17 @@ export class UserService {
 		private readonly sessionService: SessionService
 	) {}
 
+	public async getAllUsers() {
+		return this.prisma.user.findMany({
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				ircNickname: true
+			}
+		})
+	}
+
 	public async findById(id: string) {
 		const user = await this.prisma.user.findUnique({
 			where: { id }

@@ -17,18 +17,12 @@ export const getMailerConfig = (
 			port,
 			secure,
 			auth: { user, pass },
-			requireTLS: !secure,
 			pool: true,
 			maxConnections: 5,
 			maxMessages: 100,
 			connectionTimeout: 20_000,
 			greetingTimeout: 10_000,
-			socketTimeout: 30_000,
-			tls: {
-				minVersion: 'TLSv1.2',
-				rejectUnauthorized: true,
-				servername: host
-			}
+			socketTimeout: 30_000
 		},
 		defaults: {
 			from: `"IRC Client Project" <${from}>`

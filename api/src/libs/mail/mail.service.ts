@@ -15,14 +15,14 @@ export class MailService {
 	) {}
 
 	public async sendConfirmationEmail(email: string, token: string) {
-		const domain = this.configService.getOrThrow<string>('ALLOWED_ORIGIN')
+		const domain = this.configService.getOrThrow<string>('APP_URL_TYPE')
 		const html = await render(ConfirmationTemplate({ domain, token }))
 
 		return this.sendMail(email, 'Confirm your email', html)
 	}
 
 	public async sendResetPassword(email: string, token: string) {
-		const domain = this.configService.getOrThrow<string>('ALLOWED_ORIGIN')
+		const domain = this.configService.getOrThrow<string>('APP_URL_TYPE')
 		const html = await render(ResetPasswordTemplate({ domain, token }))
 
 		return this.sendMail(email, 'Reset password', html)

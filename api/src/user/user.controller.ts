@@ -60,4 +60,11 @@ export class UserController {
 	) {
 		return this.userService.updateOwnProfile(userId, dto)
 	}
+
+	@Authorization(UserRole.REGULAR, UserRole.ADMIN)
+	@Get()
+	@HttpCode(HttpStatus.OK)
+	public async getAllUsers() {
+		return this.userService.getAllUsers()
+	}
 }

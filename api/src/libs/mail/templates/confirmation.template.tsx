@@ -11,7 +11,7 @@ export function ConfirmationTemplate({
 	domain,
 	token,
 }: ConfirmationTemplateProps) {
-	const confirmationLink = `${domain}/auth/email-confirmation?token=${token}`
+	const confirmationLink = `ircclient://auth/email-confirmation?token=${token}`
 
 	return(
 		<Tailwind>
